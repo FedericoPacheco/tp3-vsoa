@@ -4,4 +4,4 @@ lxc exec ubuntuC-node3 -- su --login ubuntuadm
 
 sudo gcc -o simple_user simple_user.c -I/home/ubuntuadm/SPREAD/includeSpread -L/home/ubuntuadm/SPREAD/libSpread -lspread
 
-sudo gcc -o vsoa_spread_sr vsoa_spread_usr.c -I/home/ubuntuadm/SPREAD/includeSpread -L/home/ubuntuadm/SPREAD/libSpread -lspread
+sudo gcc -o vsoa_spread_usr vsoa_spread_usr.c -I/mnt/hgfs/TP3/Material/SPREAD/includeSpread -L/mnt/hgfs/TP3/Material/SPREAD/libSpread -lspread
