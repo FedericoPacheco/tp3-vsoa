@@ -1,0 +1,7 @@
+lxc exec ubuntuC-node1 -- su --login ubuntuadm
+lxc exec ubuntuC-node2 -- su --login ubuntuadm
+lxc exec ubuntuC-node3 -- su --login ubuntuadm
+
+sudo gcc -o simple_user simple_user.c -I/home/ubuntuadm/SPREAD/includeSpread -L/home/ubuntuadm/SPREAD/libSpread -lspread
+
+sudo gcc -o vsoa_spread_sr vsoa_spread_usr.c -I/home/ubuntuadm/SPREAD/includeSpread -L/home/ubuntuadm/SPREAD/libSpread -lspread
