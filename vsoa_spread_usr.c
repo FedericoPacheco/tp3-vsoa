@@ -7,10 +7,10 @@
 
 // ---------------------------------------------------------------------------------------------------------
 // SPREAD
-#define ERROR_MESS 0
-#define ERROR_MESS_STR "error"
-#define MAX_MSG_LEN 1024
-#define GRUPOS_MAX 16
+#define ERROR_MESS		0
+#define ERROR_MESS_STR	"error"
+#define MAX_MSG_LEN		1024
+#define GRUPOS_MAX		16
 
 int cont_msg = 0;
 int error = 0;
@@ -36,11 +36,11 @@ void recibir_n_mensajes();
 #define OPC_SALIR		 'q'
 
 #define UNRELIABLE_MESS_STR "unrel"
-#define RELIABLE_MESS_STR "rel"
-#define FIFO_MESS_STR "fifo"
-#define CAUSAL_MESS_STR "causal"
-#define AGREED_MESS_STR "atom"
-#define SAFE_MESS_STR "safe"
+#define RELIABLE_MESS_STR	"rel"
+#define FIFO_MESS_STR		"fifo"
+#define CAUSAL_MESS_STR		"causal"
+#define AGREED_MESS_STR		"atom"
+#define SAFE_MESS_STR		"safe"
 
 void imprimir_menu();
 void gestionar_opciones();
@@ -85,12 +85,12 @@ void imprimir_menu()
 
 void gestionar_opciones()
 {
-	char msg[MAX_MSG_LEN];
-	int16 tipo_servicio;
-	char nombre_grupo[MAX_MSG_LEN];
+	char msg[MAX_MSG_LEN] = "";
+	int16 tipo_servicio = ERROR_MESS;
+	char nombre_grupo[MAX_GROUP_NAME] = "";
 	
-	char opc;
-	char tipo_servicio_str[8];
+	char opc = OPC_SALIR;
+	char tipo_servicio_str[8] = ERROR_MESS_STR;
 
 	do
 	{
@@ -201,10 +201,6 @@ char* mapear_tipo_servicio(int16 tipo_servicio)
 }
 
 // ---------------------------------------------------------------------------------------------------------
-void conectarse(char* num_usr)
-{
-
-}
 
 void unirse_a_grupo(char* nombre_grupo)
 {
@@ -245,17 +241,16 @@ void enviar_mensaje(char* msg, int16 tipo_servicio, char* nombre_grupo)
 void recibir_mensaje()
 {
 	// Nota: el significado de lo que guardan las variables cambia de acuerdo al tipo de mensaje
-	char msg[MAX_MSG_LEN];
-	char remitente[MAX_GROUP_NAME];
+	char msg[MAX_MSG_LEN] = "";
+	char remitente[MAX_GROUP_NAME] = "";
 	char grupos[GRUPOS_MAX][MAX_GROUP_NAME];
-	int	num_grupos;
+	int	num_grupos = -1;
 	//membership_info info_membresia;
 	int	tipo_servicio = ERROR_MESS;
-	int16 tipo_mensaje;
+	int16 tipo_mensaje = -1;
 	int	endian_mismatch;
 	
-	// Si no hay mensajes para recibir, se bloquea
-	error = SP_receive(buzon, &tipo_servicio, remitente, GRUPOS_MAX, &num_grupos, grupos, &tipo_mensaje, &endian_mismatch, sizeof(msg), msg);
+	error = SP_receive(buzon, &tipo_servicio, remitente, GRUPOS_MAX, &num_grupos, grupos, &tipo_mensaje, &endian_mismatch, MAX_MSG_LEN, msg);
 	if (error < 0)
 	{
 		printf("Error: no se pudo recibir el mensaje\n");
@@ -269,8 +264,8 @@ void recibir_mensaje()
 			printf("Tipo de servicio: %s\n", mapear_tipo_servicio(tipo_servicio));
 			printf("Remitente: %s\n", remitente);
 			printf("Grupo: %s\n", &grupos[0][0]);
-			printf("Mensaje: %s(test)", msg);
-			printf("Tamanio: %li bytes\n", strlen(msg));
+			printf("Mensaje: %s\n", msg);
+			printf("Tamanio: %li bytes\n\n", strlen(msg) + 1);
 		}
 		else if (Is_membership_mess(tipo_servicio))
 		{
@@ -297,18 +292,18 @@ void recibir_mensaje()
 				printf("Grupo: %s\n", remitente);
 				printf("Miembros:\n");
 				for (int i = 0; i < num_grupos; i++)
-					printf("\t%i - %s\n", i, &grupos[i][0]);
+					printf("\t%i - %s\n", i + 1, &grupos[i][0]);
 				printf("\n");
 			}
 			else if (Is_transition_mess(tipo_servicio))
 			{
 				printf("#%i - Mensaje de membresia transicional\n", cont_msg);
-				printf("Grupo: %s\n", remitente);
+				printf("Grupo: %s\n\n", remitente);
 			}
 			else if (Is_caused_leave_mess(tipo_servicio))
-				printf("#%i - Mensaje de membresia de que el presente miembro salio del grupo\n", cont_msg);
+				printf("#%i - Mensaje de membresia de que el presente miembro salio del grupo\n\n", cont_msg);
 			else
-				printf("#%i - Error: mensaje de membresia invalido\n", cont_msg);
+				printf("#%i - Error: mensaje de membresia invalido\n\n", cont_msg);
 		}
 	}
 }
@@ -323,7 +318,6 @@ void recibir_n_mensajes()
 		}
 	else
 		printf("Error: no hay mensajes para recibir\n");
-
 }
 
 
