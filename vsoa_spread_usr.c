@@ -245,7 +245,7 @@ void recibir_mensaje()
 	char remitente[MAX_GROUP_NAME] = "";
 	char grupos[GRUPOS_MAX][MAX_GROUP_NAME];
 	int	num_grupos = -1;
-	//membership_info info_membresia;
+	membership_info info_membresia;
 	int	tipo_servicio = ERROR_MESS;
 	int16 tipo_mensaje = -1;
 	int	endian_mismatch;
@@ -269,41 +269,43 @@ void recibir_mensaje()
 		}
 		else if (Is_membership_mess(tipo_servicio))
 		{
-			/*
 			error = SP_get_memb_info(msg, tipo_servicio, &info_membresia);
 			if (error < 0)
 			{
 				printf("Error: el mensaje de membresia no tiene un cuerpo valido\n\n");
 				SP_error(error);
 			}
-			else*/ if (Is_reg_memb_mess(tipo_servicio))
-			{
-				printf("#%i - Mensaje de membresia regular\n", cont_msg);
-
-				if (Is_caused_join_mess(tipo_servicio))
-					printf("Motivo: un miembro se unio al grupo\n");
-				else if (Is_caused_leave_mess(tipo_servicio))
-					printf("Motivo: otro miembro salio del grupo\n");
-				else if (Is_caused_disconnect_mess(tipo_servicio))
-					printf("Motivo: otro miembro se desconecto del grupo (abrupta o correctamente)\n");
-				else if (Is_caused_network_mess(tipo_servicio))
-					printf("Motivo: se cayo un miembro, un spread daemon murio o hay una particion la red\n");
-
-				printf("Grupo: %s\n", remitente);
-				printf("Miembros:\n");
-				for (int i = 0; i < num_grupos; i++)
-					printf("\t%i - %s\n", i + 1, &grupos[i][0]);
-				printf("\n");
-			}
-			else if (Is_transition_mess(tipo_servicio))
-			{
-				printf("#%i - Mensaje de membresia transicional\n", cont_msg);
-				printf("Grupo: %s\n\n", remitente);
-			}
-			else if (Is_caused_leave_mess(tipo_servicio))
-				printf("#%i - Mensaje de membresia de que el presente miembro salio del grupo\n\n", cont_msg);
 			else
-				printf("#%i - Error: mensaje de membresia invalido\n\n", cont_msg);
+			{
+				if (Is_reg_memb_mess(tipo_servicio))
+				{
+					printf("#%i - Mensaje de membresia regular\n", cont_msg);
+
+					if (Is_caused_join_mess(tipo_servicio))
+						printf("Motivo: el miembro %s se unio al grupo\n", info_membresia.changed_member);
+					else if (Is_caused_leave_mess(tipo_servicio))
+						printf("Motivo: el miembro %s salio del grupo\n", info_membresia.changed_member);
+					else if (Is_caused_disconnect_mess(tipo_servicio))
+						printf("Motivo: el miembro %s se desconecto del grupo (abrupta o correctamente)\n", info_membresia.changed_member);
+					else if (Is_caused_network_mess(tipo_servicio))
+						printf("Motivo: se cayo un miembro, un spread daemon murio o hay una particion en la red\n");
+
+					printf("Grupo: %s\n", remitente);
+					printf("Miembros:\n");
+					for (int i = 0; i < num_grupos; i++)
+						printf("\t%i - %s\n", i + 1, &grupos[i][0]);
+					printf("\n");
+				}
+				else if (Is_transition_mess(tipo_servicio))
+				{
+					printf("#%i - Mensaje de membresia transicional\n", cont_msg);
+					printf("Grupo: %s\n\n", remitente);
+				}
+				else if (Is_caused_leave_mess(tipo_servicio))
+					printf("#%i - Mensaje de membresia de que el presente miembro salio del grupo\n\n", cont_msg);
+				else
+					printf("#%i - Error: mensaje de membresia invalido\n\n", cont_msg);
+			}
 		}
 	}
 }
