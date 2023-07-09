@@ -1,3 +1,0 @@
-lxc exec ubuntuC-node1 -- su --login ubuntuadm
-lxc exec ubuntuC-node2 -- su --login ubuntuadm
-lxc exec ubuntuC-node3 -- su --login ubuntuadm
